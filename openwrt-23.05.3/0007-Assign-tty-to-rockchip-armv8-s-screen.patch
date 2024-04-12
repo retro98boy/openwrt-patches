@@ -1,0 +1,23 @@
+From c46fbbc0102e2cf747e718b26a7154634a294d1d Mon Sep 17 00:00:00 2001
+From: retro98boy <retro98boy@qq.com>
+Date: Mon, 8 Apr 2024 10:46:26 +0800
+Subject: [PATCH 07/10] Assign tty to rockchip/armv8's screen
+
+---
+ target/linux/rockchip/armv8/base-files/etc/inittab | 4 ++++
+ 1 file changed, 4 insertions(+)
+ create mode 100644 target/linux/rockchip/armv8/base-files/etc/inittab
+
+diff --git a/target/linux/rockchip/armv8/base-files/etc/inittab b/target/linux/rockchip/armv8/base-files/etc/inittab
+new file mode 100644
+index 0000000..b944a93
+--- /dev/null
++++ b/target/linux/rockchip/armv8/base-files/etc/inittab
+@@ -0,0 +1,4 @@
++::sysinit:/etc/init.d/rcS S boot
++::shutdown:/etc/init.d/rcS K shutdown
++::askconsole:/usr/libexec/login.sh
++tty1::askfirst:/usr/libexec/login.sh
+-- 
+2.44.0
+

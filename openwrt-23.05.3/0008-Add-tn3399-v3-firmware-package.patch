@@ -1,0 +1,56 @@
+From 54b9d2b42b84c040199770a053ecdf2a26d336e4 Mon Sep 17 00:00:00 2001
+From: retro98boy <retro98boy@qq.com>
+Date: Mon, 8 Apr 2024 10:47:04 +0800
+Subject: [PATCH 08/10] Add tn3399-v3-firmware package
+
+---
+ package/firmware/tn3399-v3-firmware/Makefile | 37 ++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+ create mode 100644 package/firmware/tn3399-v3-firmware/Makefile
+
+diff --git a/package/firmware/tn3399-v3-firmware/Makefile b/package/firmware/tn3399-v3-firmware/Makefile
+new file mode 100644
+index 0000000..c603ac0
+--- /dev/null
++++ b/package/firmware/tn3399-v3-firmware/Makefile
+@@ -0,0 +1,37 @@
++include $(TOPDIR)/rules.mk
++
++PKG_NAME:=brcmfmac-firmware-tn3399-v3
++
++PKG_SOURCE_URL:=https://github.com/LibreELEC/brcmfmac_sdio-firmware.git
++PKG_SOURCE_PROTO:=git
++PKG_SOURCE_VERSION:=c70355f9ec6d015b91a5c3199aa08b433e2f7caf
++# sha256sum
++PKG_MIRROR_HASH:=23e708adfc7a88e73aa732689f34ec93804c69ec5c42b38afa6d6f4ad3c16a25
++
++include $(INCLUDE_DIR)/package.mk
++
++define Package/brcmfmac-firmware-tn3399-v3
++  SECTION:=firmware
++  CATEGORY:=Firmware
++  URL:=https://github.com/LibreELEC/brcmfmac_sdio-firmware.git
++  TITLE:=TIANNUO TN3399_V3 AP6255 Firmware
++endef
++
++define Build/Compile
++	true
++endef
++
++define Package/brcmfmac-firmware-tn3399-v3/install
++	$(INSTALL_DIR) $(1)/lib/firmware/brcm
++	$(INSTALL_DATA) \
++		$(PKG_BUILD_DIR)/BCM4345C0.hcd \
++		$(1)/lib/firmware/brcm/BCM4345C0.hcd
++	$(INSTALL_DATA) \
++		$(PKG_BUILD_DIR)/brcmfmac43455-sdio.bin \
++		$(1)/lib/firmware/brcm/brcmfmac43455-sdio.tiannuo,tn3399-v3.bin
++	$(INSTALL_DATA) \
++		$(PKG_BUILD_DIR)/brcmfmac43455-sdio.txt \
++		$(1)/lib/firmware/brcm/brcmfmac43455-sdio.tiannuo,tn3399-v3.txt
++endef
++
++$(eval $(call BuildPackage,brcmfmac-firmware-tn3399-v3))
+-- 
+2.44.0
+

@@ -1,0 +1,89 @@
+From 5f5f95a71856687b9393203e41a31193ba07ec0a Mon Sep 17 00:00:00 2001
+From: retro98boy <retro98boy@qq.com>
+Date: Wed, 10 Apr 2024 14:44:10 +0800
+Subject: [PATCH 03/10] Add sound kmod packages about Rockchip and Realtek
+
+---
+ package/kernel/linux/modules/sound.mk | 66 +++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+
+diff --git a/package/kernel/linux/modules/sound.mk b/package/kernel/linux/modules/sound.mk
+index 2bfa146..afd48da 100644
+--- a/package/kernel/linux/modules/sound.mk
++++ b/package/kernel/linux/modules/sound.mk
+@@ -254,6 +254,72 @@ endef
+ $(eval $(call KernelPackage,sound-soc-imx-sgtl5000))
+ 
+ 
++define KernelPackage/sound-soc-rockchip
++  TITLE:=Rockchip SoC support
++  KCONFIG:= \
++	CONFIG_SND_SOC_ROCKCHIP \
++	CONFIG_SND_SOC_ROCKCHIP_I2S \
++	CONFIG_SND_SOC_ROCKCHIP_PDM \
++	CONFIG_SND_SOC_ROCKCHIP_SPDIF
++  FILES:= \
++	$(LINUX_DIR)/sound/soc/rockchip/snd-soc-rockchip-i2s.ko \
++	$(LINUX_DIR)/sound/soc/rockchip/snd-soc-rockchip-pcm.ko \
++	$(LINUX_DIR)/sound/soc/rockchip/snd-soc-rockchip-pdm.ko \
++	$(LINUX_DIR)/sound/soc/rockchip/snd-soc-rockchip-spdif.ko
++  AUTOLOAD:=$(call AutoLoad,56,snd-soc-rockchip-i2s snd-soc-rockchip-pcm snd-soc-rockchip-pdm snd-soc-rockchip-spdif)
++  DEPENDS:=@TARGET_rockchip +kmod-sound-soc-core
++  $(call AddDepends/sound)
++endef
++
++$(eval $(call KernelPackage,sound-soc-rockchip))
++
++
++define KernelPackage/sound-soc-simple-card
++  TITLE:=ASoC Simple sound card support
++  KCONFIG:= \
++	CONFIG_SND_SIMPLE_CARD
++  FILES:= \
++	$(LINUX_DIR)/sound/soc/generic/snd-soc-simple-card.ko \
++	$(LINUX_DIR)/sound/soc/generic/snd-soc-simple-card-utils.ko
++  AUTOLOAD:=$(call AutoLoad,56,snd-soc-simple-card snd-soc-simple-card-utils)
++  DEPENDS:=+kmod-sound-soc-core
++  $(call AddDepends/sound)
++endef
++
++$(eval $(call KernelPackage,sound-soc-simple-card))
++
++
++define KernelPackage/sound-soc-simple-amplifier
++  TITLE:=Simple Audio Amplifier
++  KCONFIG:= \
++	CONFIG_SND_SOC_SIMPLE_AMPLIFIER
++  FILES:= \
++	$(LINUX_DIR)/sound/soc/codecs/snd-soc-simple-amplifier.ko
++  AUTOLOAD:=$(call AutoLoad,56,snd-soc-simple-amplifier)
++  DEPENDS:=+kmod-sound-soc-core
++  $(call AddDepends/sound)
++endef
++
++$(eval $(call KernelPackage,sound-soc-simple-amplifier))
++
++
++define KernelPackage/sound-soc-realtek
++  TITLE:=Realtek Codecs
++  KCONFIG:= \
++	CONFIG_SND_SOC_RT5640 \
++	CONFIG_SND_SOC_RT5651
++  FILES:= \
++	$(LINUX_DIR)/sound/soc/codecs/snd-soc-rt5640.ko \
++	$(LINUX_DIR)/sound/soc/codecs/snd-soc-rt5651.ko \
++	$(LINUX_DIR)/sound/soc/codecs/snd-soc-rl6231.ko
++  AUTOLOAD:=$(call AutoLoad,57,snd-soc-rt5640 snd-soc-rt5651 snd-soc-rl6231)
++  DEPENDS:=+kmod-sound-soc-core
++  $(call AddDepends/sound)
++endef
++
++$(eval $(call KernelPackage,sound-soc-realtek))
++
++
+ define KernelPackage/sound-soc-spdif
+   TITLE:=SoC S/PDIF codec support
+   KCONFIG:=CONFIG_SND_SOC_SPDIF
+-- 
+2.44.0
+

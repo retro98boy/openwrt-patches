@@ -1,0 +1,32 @@
+From 9106195b8852af22630e245f3259bd094ec71af1 Mon Sep 17 00:00:00 2001
+From: retro98boy <retro98boy@qq.com>
+Date: Wed, 10 Apr 2024 14:43:23 +0800
+Subject: [PATCH 02/10] Add Kconfig prompt of RT5651 in rockchip linux
+
+---
+ .../200-add-Kconfig-prompt-of-RT5651.patch          | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+ create mode 100644 target/linux/rockchip/patches-5.15/200-add-Kconfig-prompt-of-RT5651.patch
+
+diff --git a/target/linux/rockchip/patches-5.15/200-add-Kconfig-prompt-of-RT5651.patch b/target/linux/rockchip/patches-5.15/200-add-Kconfig-prompt-of-RT5651.patch
+new file mode 100644
+index 0000000..1372380
+--- /dev/null
++++ b/target/linux/rockchip/patches-5.15/200-add-Kconfig-prompt-of-RT5651.patch
+@@ -0,0 +1,13 @@
++diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
++index 1750cc888..ac45f9973 100644
++--- a/sound/soc/codecs/Kconfig
+++++ b/sound/soc/codecs/Kconfig
++@@ -1200,7 +1200,7 @@ config SND_SOC_RT5645
++ 	depends on I2C
++ 
++ config SND_SOC_RT5651
++-	tristate
+++	tristate "Realtek RT5651 Codec"
++ 	depends on I2C
++ 
++ config SND_SOC_RT5659
+-- 
+2.44.0
+

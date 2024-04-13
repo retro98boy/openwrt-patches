@@ -50,9 +50,10 @@ sed -i '$a src-git kenzok8_small https://github.com/kenzok8/small' feeds.conf.de
 添加零散的软件包（可选）：
 
 ```
-git clone https://github.com/coolsnowwolf/luci.git ~/coolsnowwolf_luci
-cp -r ~/coolsnowwolf_luci/applications/luci-app-airplay2 feeds/luci/applications
-cp -r ~/coolsnowwolf_luci/applications/luci-app-socat feeds/luci/applications
+git clone https://github.com/sbwml/openwrt_pkgs.git ~/sbwml_openwrt_pkgs
+cp -r ~/sbwml_openwrt_pkgs/luci-app-airplay2 feeds/luci/applications
+cp -r ~/sbwml_openwrt_pkgs/luci-app-socat feeds/luci/applications
+cp -r ~/sbwml_openwrt_pkgs/luci-app-zerotier feeds/luci/applications
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a

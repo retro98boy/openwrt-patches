@@ -1,4 +1,4 @@
-From 26c211ecd163ea2f102f58136919ab0d02ca110c Mon Sep 17 00:00:00 2001
+From dff4c2b93b46f3d61a742961078c9beebe5b576e Mon Sep 17 00:00:00 2001
 From: retro98boy <retro98boy@qq.com>
 Date: Wed, 10 Apr 2024 14:42:07 +0800
 Subject: [PATCH 01/10] Add RT5651 related patches to rockchip linux from

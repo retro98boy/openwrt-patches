@@ -1,6 +1,6 @@
 # 仓库作用
 
-给自己拥有的板子编译官方OpenWRT，通过对官方源码打补丁来支持不在源码中的板子
+给自己拥有的板子编译OpenWRT，通过对官方源码打补丁来支持不在源码中的板子
 
 目前支持：
 
@@ -12,7 +12,7 @@ HRK MB99-V2
 
 ## 准备环境
 
-使用Ubuntu 20.04容器来编译，容器中安装工具：
+推荐使用Ubuntu 22.04容器来编译，容器中安装工具：
 
 ```
 sudo apt install build-essential clang flex bison g++ gawk \

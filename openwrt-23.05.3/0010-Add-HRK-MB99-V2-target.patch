@@ -1,15 +1,15 @@
-From f220a6aec549aa9fc608ef0a06a5e406ee3a8047 Mon Sep 17 00:00:00 2001
+From 9e122e50e1a1f43a47a7c34abb8243f779110d6a Mon Sep 17 00:00:00 2001
 From: retro98boy <retro98boy@qq.com>
 Date: Wed, 10 Apr 2024 23:08:30 +0800
 Subject: [PATCH 10/10] Add HRK MB99-V2 target
 
 ---
  package/boot/uboot-rockchip/Makefile          |   8 +
- .../patches/201-add-mb99-v2.patch             | 759 ++++++++++++++++++
+ .../patches/201-add-mb99-v2.patch             | 777 ++++++++++++++++++
  .../etc/hotplug.d/net/40-net-smp-affinity     |   4 +
  target/linux/rockchip/image/armv8.mk          |  11 +
- .../patches-5.15/202-add-mb99-v2.patch        | 658 +++++++++++++++
- 5 files changed, 1440 insertions(+)
+ .../patches-5.15/202-add-mb99-v2.patch        | 675 +++++++++++++++
+ 5 files changed, 1475 insertions(+)
  create mode 100644 package/boot/uboot-rockchip/patches/201-add-mb99-v2.patch
  create mode 100644 target/linux/rockchip/patches-5.15/202-add-mb99-v2.patch
 
@@ -39,10 +39,10 @@ index 74514bc..f225dab 100644
    orangepi-r1-plus-rk3328 \
 diff --git a/package/boot/uboot-rockchip/patches/201-add-mb99-v2.patch b/package/boot/uboot-rockchip/patches/201-add-mb99-v2.patch
 new file mode 100644
-index 0000000..97beed3
+index 0000000..b6a52cf
 --- /dev/null
 +++ b/package/boot/uboot-rockchip/patches/201-add-mb99-v2.patch
-@@ -0,0 +1,759 @@
+@@ -0,0 +1,777 @@
 +diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
 +index 60a33431..c80f013a 100644
 +--- a/arch/arm/dts/Makefile
@@ -80,15 +80,16 @@ index 0000000..97beed3
 ++};
 +diff --git a/arch/arm/dts/rk3399-mb99-v2.dts b/arch/arm/dts/rk3399-mb99-v2.dts
 +new file mode 100644
-+index 00000000..8d9723a3
++index 00000000..d40ab00f
 +--- /dev/null
 ++++ b/arch/arm/dts/rk3399-mb99-v2.dts
-+@@ -0,0 +1,641 @@
++@@ -0,0 +1,659 @@
 ++/dts-v1/;
 ++
 ++#include <dt-bindings/input/linux-event-codes.h>
 ++#include <dt-bindings/pwm/pwm.h>
 ++#include "rk3399.dtsi"
+++#include "rk3399-op1-opp.dtsi"
 ++
 ++/ {
 ++	model = "HRK MB99-V2";
@@ -252,19 +253,30 @@ index 0000000..97beed3
 ++};
 ++
 ++&gmac {
-++	assigned-clocks = <&cru SCLK_RMII_SRC>;
 ++	assigned-clock-parents = <&clkin_gmac>;
+++	assigned-clocks = <&cru SCLK_RMII_SRC>;
 ++	clock_in_out = "input";
-++	phy-supply = <&vcc_lan>;
-++	phy-mode = "rgmii";
 ++	pinctrl-names = "default";
-++	pinctrl-0 = <&rgmii_pins>;
-++	snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
-++	snps,reset-active-low;
-++	snps,reset-delays-us = <0 10000 50000>;
+++	pinctrl-0 = <&rgmii_pins>, <&phy_rst_l>;
+++	phy-handle = <&rtl8211e>;
+++	phy-mode = "rgmii";
+++	phy-supply = <&vcc_lan>;
 ++	tx_delay = <0x28>;
 ++	rx_delay = <0x11>;
 ++	status = "okay";
+++
+++	mdio {
+++		compatible = "snps,dwmac-mdio";
+++		#address-cells = <1>;
+++		#size-cells = <0>;
+++
+++		rtl8211e: ethernet-phy@0 {
+++			reg = <0>;
+++			reset-assert-us = <10000>;
+++			reset-deassert-us = <30000>;
+++			reset-gpios = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
+++		};
+++	};
 ++};
 ++
 ++&gpu {
@@ -549,6 +561,12 @@ index 0000000..97beed3
 ++};
 ++
 ++&pinctrl {
+++	gmac {
+++		phy_rst_l: phy-rst-l {
+++			rockchip,pins = <3 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
+++		};
+++	};
+++
 ++	rt5651 {
 ++		hp_det: hp-det {
 ++			rockchip,pins = <1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;
@@ -817,10 +835,10 @@ index dd18716..ec533b6 100644
  esac
  
 diff --git a/target/linux/rockchip/image/armv8.mk b/target/linux/rockchip/image/armv8.mk
-index 7667118..1fdd170 100644
+index 007c0f7..ae47a94 100644
 --- a/target/linux/rockchip/image/armv8.mk
 +++ b/target/linux/rockchip/image/armv8.mk
-@@ -63,6 +63,17 @@ define Device/tiannuo_tn3399-v3
+@@ -62,6 +62,17 @@ define Device/tiannuo_tn3399-v3
  endef
  TARGET_DEVICES += tiannuo_tn3399-v3
  
@@ -831,7 +849,7 @@ index 7667118..1fdd170 100644
 +  IMAGE/sysupgrade.img.gz := boot-common | boot-script | pine64-img | gzip | append-metadata
 +  DEVICE_PACKAGES := kmod-ata-ahci kmod-usb-dwc3 \
 +  kmod-sound-core kmod-sound-soc-simple-card kmod-sound-soc-rockchip kmod-sound-soc-realtek \
-+  kmod-drm-rockchip kmod-drm-panfrost kmod-backlight-pwm
++  kmod-drm-rockchip kmod-drm-panfrost
 +endef
 +TARGET_DEVICES += hrk_mb99-v2
 +
@@ -840,32 +858,32 @@ index 7667118..1fdd170 100644
    DEVICE_MODEL := ROCK Pi 4A
 diff --git a/target/linux/rockchip/patches-5.15/202-add-mb99-v2.patch b/target/linux/rockchip/patches-5.15/202-add-mb99-v2.patch
 new file mode 100644
-index 0000000..9bd5a64
+index 0000000..9eaadac
 --- /dev/null
 +++ b/target/linux/rockchip/patches-5.15/202-add-mb99-v2.patch
-@@ -0,0 +1,658 @@
+@@ -0,0 +1,675 @@
 +diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-+index fed862199..48c3c6ebe 100644
++index 696960662..8d005fe27 100644
 +--- a/arch/arm64/boot/dts/rockchip/Makefile
 ++++ b/arch/arm64/boot/dts/rockchip/Makefile
-+@@ -52,5 +52,6 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-sapphire.dtb
++@@ -44,4 +44,5 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rockpro64.dtb
++ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-sapphire.dtb
 + dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-sapphire-excavator.dtb
 + dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-tn3399-v3.dtb
-+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-tn3399-v3-with-1024x600-single-8bit-lvds-panel.dtb
 ++dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-mb99-v2.dtb
 + dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399pro-rock-pi-n10.dtb
-+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-evb1-v10.dtb
 +diff --git a/arch/arm64/boot/dts/rockchip/rk3399-mb99-v2.dts b/arch/arm64/boot/dts/rockchip/rk3399-mb99-v2.dts
 +new file mode 100644
-+index 000000000..8d9723a31
++index 000000000..d40ab00f1
 +--- /dev/null
 ++++ b/arch/arm64/boot/dts/rockchip/rk3399-mb99-v2.dts
-+@@ -0,0 +1,641 @@
++@@ -0,0 +1,659 @@
 ++/dts-v1/;
 ++
 ++#include <dt-bindings/input/linux-event-codes.h>
 ++#include <dt-bindings/pwm/pwm.h>
 ++#include "rk3399.dtsi"
+++#include "rk3399-op1-opp.dtsi"
 ++
 ++/ {
 ++	model = "HRK MB99-V2";
@@ -1029,19 +1047,30 @@ index 0000000..9bd5a64
 ++};
 ++
 ++&gmac {
-++	assigned-clocks = <&cru SCLK_RMII_SRC>;
 ++	assigned-clock-parents = <&clkin_gmac>;
+++	assigned-clocks = <&cru SCLK_RMII_SRC>;
 ++	clock_in_out = "input";
-++	phy-supply = <&vcc_lan>;
-++	phy-mode = "rgmii";
 ++	pinctrl-names = "default";
-++	pinctrl-0 = <&rgmii_pins>;
-++	snps,reset-gpio = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
-++	snps,reset-active-low;
-++	snps,reset-delays-us = <0 10000 50000>;
+++	pinctrl-0 = <&rgmii_pins>, <&phy_rst_l>;
+++	phy-handle = <&rtl8211e>;
+++	phy-mode = "rgmii";
+++	phy-supply = <&vcc_lan>;
 ++	tx_delay = <0x28>;
 ++	rx_delay = <0x11>;
 ++	status = "okay";
+++
+++	mdio {
+++		compatible = "snps,dwmac-mdio";
+++		#address-cells = <1>;
+++		#size-cells = <0>;
+++
+++		rtl8211e: ethernet-phy@0 {
+++			reg = <0>;
+++			reset-assert-us = <10000>;
+++			reset-deassert-us = <30000>;
+++			reset-gpios = <&gpio3 RK_PB7 GPIO_ACTIVE_LOW>;
+++		};
+++	};
 ++};
 ++
 ++&gpu {
@@ -1326,6 +1355,12 @@ index 0000000..9bd5a64
 ++};
 ++
 ++&pinctrl {
+++	gmac {
+++		phy_rst_l: phy-rst-l {
+++			rockchip,pins = <3 RK_PB7 RK_FUNC_GPIO &pcfg_pull_none>;
+++		};
+++	};
+++
 ++	rt5651 {
 ++		hp_det: hp-det {
 ++			rockchip,pins = <1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;

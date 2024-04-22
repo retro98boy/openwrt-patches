@@ -1,17 +1,17 @@
-From 480d6355987f3b549e12f51250b8de7cf4993050 Mon Sep 17 00:00:00 2001
+From ed32ff0d22a7d910ddf7ca5eadb1f3031311f894 Mon Sep 17 00:00:00 2001
 From: retro98boy <retro98boy@qq.com>
 Date: Mon, 8 Apr 2024 10:46:02 +0800
 Subject: [PATCH 06/10] Add display kmod packages about Rockchip
 
 ---
- package/kernel/linux/modules/video.mk | 54 +++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ package/kernel/linux/modules/video.mk | 49 +++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/package/kernel/linux/modules/video.mk b/package/kernel/linux/modules/video.mk
-index f1e61f3..0b00a1e 100644
+index f1e61f3..20109f4 100644
 --- a/package/kernel/linux/modules/video.mk
 +++ b/package/kernel/linux/modules/video.mk
-@@ -386,6 +386,60 @@ endef
+@@ -386,6 +386,55 @@ endef
  
  $(eval $(call KernelPackage,drm-imx-ldb))
  
@@ -19,7 +19,7 @@ index f1e61f3..0b00a1e 100644
 +define KernelPackage/drm-rockchip
 +  SUBMENU:=$(VIDEO_MENU)
 +  TITLE:=RockChip DRM support
-+  DEPENDS:=@TARGET_rockchip +kmod-drm-kms-helper +kmod-sound-soc-core
++  DEPENDS:=@TARGET_rockchip +kmod-drm-kms-helper +kmod-backlight +kmod-sound-soc-core
 +  KCONFIG:=CONFIG_DRM_ROCKCHIP \
 +  CONFIG_DRM_FBDEV_EMULATION=y \
 +  CONFIG_DRM_FBDEV_OVERALLOC=100 \
@@ -27,10 +27,7 @@ index f1e61f3..0b00a1e 100644
 +  CONFIG_DRM_DW_HDMI_AHB_AUDIO \
 +  CONFIG_DRM_DW_HDMI_I2S_AUDIO \
 +  CONFIG_DRM_DW_HDMI_CEC \
-+  CONFIG_SND_SOC_HDMI_CODEC \
-+  CONFIG_ROCKCHIP_DW_MIPI_DSI=y \
-+  CONFIG_DRM_PANEL=y \
-+  CONFIG_DRM_PANEL_TOSHIBA_TC358775
++  CONFIG_SND_SOC_HDMI_CODEC
 +  FILES:= \
 +  $(LINUX_DIR)/drivers/gpu/drm/rockchip/rockchipdrm.ko \
 +  $(LINUX_DIR)/drivers/gpu/drm/bridge/synopsys/dw-hdmi.ko \
@@ -38,10 +35,8 @@ index f1e61f3..0b00a1e 100644
 +  $(LINUX_DIR)/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.ko \
 +  $(LINUX_DIR)/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.ko \
 +  $(LINUX_DIR)/drivers/media/cec/core/cec.ko \
-+  $(LINUX_DIR)/sound/soc/codecs/snd-soc-hdmi-codec.ko \
-+  $(LINUX_DIR)/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.ko \
-+  $(LINUX_DIR)/drivers/gpu/drm/panel/panel-toshiba-tc358775.ko
-+  AUTOLOAD:=$(call AutoLoad,08,rockchipdrm dw-hdmi dw-hdmi-ahb-audio dw-hdmi-i2s-audio dw-hdmi-cec cec snd-soc-hdmi-codec dw-mipi-dsi panel-toshiba-tc358775)
++  $(LINUX_DIR)/sound/soc/codecs/snd-soc-hdmi-codec.ko
++  AUTOLOAD:=$(call AutoLoad,08,rockchipdrm dw-hdmi dw-hdmi-ahb-audio dw-hdmi-i2s-audio dw-hdmi-cec cec snd-soc-hdmi-codec)
 +endef
 +
 +define KernelPackage/drm-rockchip/description

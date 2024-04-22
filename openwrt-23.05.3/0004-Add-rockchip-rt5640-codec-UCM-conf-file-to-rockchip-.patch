@@ -1,4 +1,4 @@
-From 97aa327eecebee8d8c059a79ecb4ad2ceacc139e Mon Sep 17 00:00:00 2001
+From 3d73aec0731fd35402d09e0c6e909c3d2a7dbf91 Mon Sep 17 00:00:00 2001
 From: retro98boy <retro98boy@qq.com>
 Date: Mon, 8 Apr 2024 10:45:15 +0800
 Subject: [PATCH 04/10] Add rockchip,rt5640-codec UCM conf file to

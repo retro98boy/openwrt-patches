@@ -1,4 +1,4 @@
-From 9106195b8852af22630e245f3259bd094ec71af1 Mon Sep 17 00:00:00 2001
+From f137554ab0cda766aaf649cdc34750cf3d53a130 Mon Sep 17 00:00:00 2001
 From: retro98boy <retro98boy@qq.com>
 Date: Wed, 10 Apr 2024 14:43:23 +0800
 Subject: [PATCH 02/10] Add Kconfig prompt of RT5651 in rockchip linux

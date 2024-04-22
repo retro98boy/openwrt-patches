@@ -1,0 +1,31 @@
+From 6a2f84dc15f07db314650b66aedfcf288cff1f16 Mon Sep 17 00:00:00 2001
+From: retro98boy <retro98boy@qq.com>
+Date: Wed, 17 Apr 2024 12:34:45 +0800
+Subject: [PATCH 03/11] Add Kconfig prompt of RT5640 in rockchip linux
+
+---
+ .../201-add-Kconfig-prompt-of-RT5640.patch           | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+ create mode 100644 target/linux/rockchip/patches-5.10/201-add-Kconfig-prompt-of-RT5640.patch
+
+diff --git a/target/linux/rockchip/patches-5.10/201-add-Kconfig-prompt-of-RT5640.patch b/target/linux/rockchip/patches-5.10/201-add-Kconfig-prompt-of-RT5640.patch
+new file mode 100644
+index 0000000000..b97dd3dcb0
+--- /dev/null
++++ b/target/linux/rockchip/patches-5.10/201-add-Kconfig-prompt-of-RT5640.patch
+@@ -0,0 +1,12 @@
++diff -uprN linux-5.10.201.orig/sound/soc/codecs/Kconfig linux-5.10.201/sound/soc/codecs/Kconfig
++--- linux-5.10.201.orig/sound/soc/codecs/Kconfig	2024-04-17 12:30:57.917157072 +0800
+++++ linux-5.10.201/sound/soc/codecs/Kconfig	2024-04-17 12:32:28.307790680 +0800
++@@ -1138,7 +1138,7 @@ config SND_SOC_RT5631
++ 	depends on I2C
++ 
++ config SND_SOC_RT5640
++-	tristate
+++	tristate "Realtek RT5640/RT5639 Codec"
++ 	depends on I2C
++ 
++ config SND_SOC_RT5645
+-- 
+2.44.0
+

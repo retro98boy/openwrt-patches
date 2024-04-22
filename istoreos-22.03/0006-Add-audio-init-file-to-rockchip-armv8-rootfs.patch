@@ -1,0 +1,45 @@
+From 89f0703c7da57ce783c9a2f036643257495a3260 Mon Sep 17 00:00:00 2001
+From: retro98boy <retro98boy@qq.com>
+Date: Wed, 10 Apr 2024 15:16:33 +0800
+Subject: [PATCH 06/11] Add audio init file to rockchip/armv8 rootfs
+
+---
+ .../armv8/base-files/etc/init.d/audio         | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+ create mode 100755 target/linux/rockchip/armv8/base-files/etc/init.d/audio
+
+diff --git a/target/linux/rockchip/armv8/base-files/etc/init.d/audio b/target/linux/rockchip/armv8/base-files/etc/init.d/audio
+new file mode 100755
+index 0000000000..8e4b9ad32f
+--- /dev/null
++++ b/target/linux/rockchip/armv8/base-files/etc/init.d/audio
+@@ -0,0 +1,26 @@
++#!/bin/sh /etc/rc.common
++
++START=99
++
++start() {
++	model=$(cat /proc/device-tree/model)
++
++	case "$model" in
++	"TIANNUO TN3399_V3")
++		alsactl init
++		;;
++	"HRK MB99-V2")
++		amixer -D hw:rockchiprt5651c cset name='DAC MIXL INF1 Switch' on
++		amixer -D hw:rockchiprt5651c cset name='DAC MIXR INF1 Switch' on
++		amixer -D hw:rockchiprt5651c cset name='Stereo DAC MIXL DAC L1 Switch' on
++		amixer -D hw:rockchiprt5651c cset name='Stereo DAC MIXR DAC R1 Switch' on
++		amixer -D hw:rockchiprt5651c cset name='OUT MIXR DAC R1 Switch' on
++		amixer -D hw:rockchiprt5651c cset name='OUT MIXL DAC L1 Switch' on
++		amixer -D hw:rockchiprt5651c cset name='HPOVOL L Switch' on
++		amixer -D hw:rockchiprt5651c cset name='HPOVOL R Switch' on
++		amixer -D hw:rockchiprt5651c cset name='HPO MIX HPVOL Switch' on
++		amixer -D hw:rockchiprt5651c cset name='HPO L Playback Switch' on
++		amixer -D hw:rockchiprt5651c cset name='HPO R Playback Switch' on
++		;;
++	esac
++}
+-- 
+2.44.0
+

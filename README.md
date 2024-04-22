@@ -1,6 +1,6 @@
 # 仓库作用
 
-给自己拥有的板子编译OpenWRT，通过对官方源码打补丁来支持不在源码中的板子
+给自己拥有的板子编译OpenWRT/iStoreOS，通过对官方源码打补丁来支持不在源码中的板子
 
 目前支持：
 
@@ -8,7 +8,7 @@ TIANNUO TN3399_V3
 
 HRK MB99-V2
 
-# 编译步骤
+# OpenWRT编译步骤
 
 ## 准备环境
 
@@ -57,6 +57,50 @@ cp -r ~/sbwml_openwrt_pkgs/luci-app-zerotier feeds/luci/applications
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
+```
+
+## 编译
+
+仓库中有自用的编译配置，将其复制到源码根目录，使用`make menuconfig`进入配置界面后，通过`<Load>`加载配置文件，然后通过`<Save>`保存到`.config`即可
+
+```
+# 根据配置提前下载需要的软件源码，如果跳过这步直接进行下一步，会变成一边下载一边编译
+make download V=s -j32
+# 编译
+make V=s -j32
+```
+
+# iStoreOS编译步骤
+
+## 准备环境
+
+推荐使用Ubuntu 22.04容器来编译，容器中安装工具：
+
+```
+sudo apt install build-essential clang flex bison g++ gawk \
+gcc-multilib g++-multilib gettext git libncurses-dev libssl-dev \
+python3-distutils rsync unzip zlib1g-dev file wget
+```
+
+## 准备源码
+
+克隆22.02分支的源码：
+
+```
+git clone https://github.com/istoreos/istoreos.git -b istoreos-22.03
+```
+
+将本仓库的补丁集全部复制到源码根目录，执行命令打补丁：
+
+```
+cd istoreos
+for patch_file in *.patch; do echo "Applying patch $patch_file"; patch -p1 < "$patch_file"; done
+```
+
+如果打补丁失败，先回退到10729c78cf，再重新打补丁：
+
+```
+git reset --hard 10729c78cf && git clean -fd
 ```
 
 ## 编译

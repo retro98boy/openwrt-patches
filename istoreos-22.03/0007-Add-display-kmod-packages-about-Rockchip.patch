@@ -1,0 +1,54 @@
+From 8c1b7199be6770173b67b31b0a8493f4e75c8b29 Mon Sep 17 00:00:00 2001
+From: retro98boy <retro98boy@qq.com>
+Date: Wed, 17 Apr 2024 09:18:42 +0800
+Subject: [PATCH 07/11] Add display kmod packages about Rockchip
+
+---
+ package/kernel/linux/modules/video.mk | 31 +++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/package/kernel/linux/modules/video.mk b/package/kernel/linux/modules/video.mk
+index 33c3799aba..e29b519dd3 100644
+--- a/package/kernel/linux/modules/video.mk
++++ b/package/kernel/linux/modules/video.mk
+@@ -465,6 +465,37 @@ endef
+ 
+ $(eval $(call KernelPackage,drm-st7789v))
+ 
++
++define KernelPackage/drm-rockchip
++  SUBMENU:=$(VIDEO_MENU)
++  TITLE:=RockChip DRM support
++  DEPENDS:=@TARGET_rockchip +kmod-drm-kms-helper +kmod-backlight +kmod-sound-soc-core
++  KCONFIG:=CONFIG_DRM_ROCKCHIP \
++  CONFIG_DRM_FBDEV_EMULATION=y \
++  CONFIG_DRM_FBDEV_OVERALLOC=100 \
++  CONFIG_ROCKCHIP_DW_HDMI=y \
++  CONFIG_DRM_DW_HDMI_AHB_AUDIO \
++  CONFIG_DRM_DW_HDMI_I2S_AUDIO \
++  CONFIG_DRM_DW_HDMI_CEC \
++  CONFIG_SND_SOC_HDMI_CODEC
++  FILES:= \
++  $(LINUX_DIR)/drivers/gpu/drm/rockchip/rockchipdrm.ko \
++  $(LINUX_DIR)/drivers/gpu/drm/bridge/synopsys/dw-hdmi.ko \
++  $(LINUX_DIR)/drivers/gpu/drm/bridge/synopsys/dw-hdmi-ahb-audio.ko \
++  $(LINUX_DIR)/drivers/gpu/drm/bridge/synopsys/dw-hdmi-i2s-audio.ko \
++  $(LINUX_DIR)/drivers/gpu/drm/bridge/synopsys/dw-hdmi-cec.ko \
++  $(LINUX_DIR)/drivers/media/cec/core/cec.ko \
++  $(LINUX_DIR)/sound/soc/codecs/snd-soc-hdmi-codec.ko
++  AUTOLOAD:=$(call AutoLoad,08,rockchipdrm dw-hdmi dw-hdmi-ahb-audio dw-hdmi-i2s-audio dw-hdmi-cec cec snd-soc-hdmi-codec)
++endef
++
++define KernelPackage/drm-rockchip/description
++  Direct Rendering Manager (DRM) support for RockChip
++endef
++
++$(eval $(call KernelPackage,drm-rockchip))
++
++
+ define KernelPackage/drm-radeon
+   SUBMENU:=$(VIDEO_MENU)
+   TITLE:=Radeon DRM support
+-- 
+2.44.0
+

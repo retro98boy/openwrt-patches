@@ -79,12 +79,12 @@ make V=s -j32
 ```
 sudo apt install build-essential clang flex bison g++ gawk \
 gcc-multilib g++-multilib gettext git libncurses-dev libssl-dev \
-python3-distutils rsync unzip zlib1g-dev file wget
+python3-distutils rsync unzip zlib1g-dev file wget python2
 ```
 
 ## 准备源码
 
-克隆22.02分支的源码：
+克隆22.03分支的源码：
 
 ```
 git clone https://github.com/istoreos/istoreos.git -b istoreos-22.03
@@ -97,10 +97,23 @@ cd istoreos
 for patch_file in *.patch; do echo "Applying patch $patch_file"; patch -p1 < "$patch_file"; done
 ```
 
-如果打补丁失败，先回退到10729c78cf，再重新打补丁：
+如果打补丁失败，先回退到34c1939f89，再重新打补丁：
 
 ```
-git reset --hard 10729c78cf && git clean -fd
+git reset --hard 34c1939f89 && git clean -fd
+```
+
+## 添加软件包
+
+添加第三方feed源（推荐）：
+
+在[这里](https://fw.koolcenter.com/iStoreOS/r4s/)下载feeds.buildinfo，用里面的内容覆盖掉源码根目录的feeds.conf.default
+
+更新feeds：
+
+```
+./scripts/feeds update -a
+./scripts/feeds install -a
 ```
 
 ## 编译

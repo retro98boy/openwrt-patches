@@ -1,3 +1,5 @@
+# 此仓库不再更新，移步[新仓库](https://github.com/retro98boy/openwrt)
+
 # 仓库作用
 
 给自己拥有的板子编译OpenWRT/iStoreOS，通过对官方源码打补丁来支持不在源码中的板子
